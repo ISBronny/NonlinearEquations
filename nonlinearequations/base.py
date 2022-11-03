@@ -12,6 +12,20 @@ If you want to replace this with a Flask application run:
 
 and then choose `flask` as template.
 """
+from typing import List
+
 
 # example constant variable
 NAME = "nonlinearequations"
+
+
+def solve_seidel(a: List[List[float]], v: List[float]) -> List[float]:
+    raise NotImplementedError
+
+
+def solve_simple_iterations(a: List[List[float]], v: List[float]) -> List[float]:
+    raise NotImplementedError
+
+
+def solve_newton(a: List[List[float]], v: List[float]) -> List[float]:
+    raise NotImplementedError

@@ -28,4 +28,5 @@ def solve_simple_iterations(a: List[List[float]], v: List[float]) -> List[float]
 
 
 def solve_newton(a: List[List[float]], v: List[float]) -> List[float]:
+    print('Hello')
     raise NotImplementedError

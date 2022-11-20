@@ -20,16 +20,17 @@ NAME = "nonlinearequations"
 
 
 def solve_seidel(a: List[List[float]], v: List[float]) -> List[float]:
-    #Findind length of n
-    n = len(a)
     x = [0, 0, 0]
-    for i in range(0,n):
-        tmp = v[i]
-        for j in range(0, n):
-            if(i != j):
-                tmp -= a[i][j] * x[j]
-        #Updating solution
-        x[i] = tmp / a[i][i]
+    n = len(a)
+    for k in range(0, 20):
+        #Findind length of n
+        for i in range(0,n):
+            tmp = v[i]
+            for j in range(0, n):
+                if(i != j):
+                    tmp -= a[i][j] * x[j]
+            #Updating solution
+            x[i] = tmp / a[i][i]
     return x
 
 

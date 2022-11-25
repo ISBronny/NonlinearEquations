@@ -33,3 +33,4 @@ def test_three_variables():
 
     assert x_expected == pytest.approx(x_actual, eps)
     assert y_expected == pytest.approx(y_actual, eps)
+    assert z_expected == pytest.approx(z_actual, eps)

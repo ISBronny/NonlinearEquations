@@ -30,6 +30,8 @@ def solve_simple_iterations(a: List[List[float]], v: List[float]) -> List[float]
 
 def solve_newton(systems, x0, eps=0.00001) -> List[List[float]]:
     k = 0
+    # ToDo: x0 задаёт пользователь через аргументы метода.
+    x0 = [[1], [5]]
     # считаем матрицу якоби подставив значение из x0 (matrixa)
     # ToDo: На вход jacobi должен подаваться просто x0
     matrix = jacobi(systems, [x0[0][0], x0[1][0]])

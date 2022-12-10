@@ -13,24 +13,39 @@ If you want to replace this with a Flask application run:
 and then choose `flask` as template.
 """
 from typing import List
+import numpy as np
 
 
 # example constant variable
 NAME = "nonlinearequations"
 
-
 def solve_seidel(a: List[List[float]], v: List[float]) -> List[float]:
-    x = [0, 0, 0]
+    
+    def get_column(a, i):
+        return [row[i] for row in a]
+
+    eps = 0.01
+    max_iterations = 1000
     n = len(a)
-    for k in range(0, 20):
-        #Findind length of n
-        for i in range(0,n):
-            tmp = v[i]
-            for j in range(0, n):
-                if(i != j):
-                    tmp -= a[i][j] * x[j]
-            #Updating solution
-            x[i] = tmp / a[i][i]
+    matrix = np.zeros((n, n))
+    
+    for i in range(n):
+        for j in range(n):
+            matrix[i][j] = a[i][j]
+
+    b = get_column(a, n-1)
+    x = np.zeros_like(b, dtype=np.double)
+
+    for k in range(max_iterations):
+        
+        x_old  = x.copy()
+        
+        for i in range(len(matrix)):
+            x[i] = (b[i] - np.dot(matrix[i][:i], x[:i]) - np.dot(matrix[i][(i+1):], x_old[(i+1):])) / matrix[i][i]
+            
+        if np.linalg.norm(x - x_old, ord=np.inf) / np.linalg.norm(x, ord=np.inf) < eps:
+            break
+            
     return x
 
 

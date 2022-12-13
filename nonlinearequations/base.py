@@ -1,32 +1,11 @@
 """
 nonlinearequations base module.
 
-This is the principal module of the nonlinearequations project.
-here you put your main classes and objects.
-
-Be creative! do whatever you want!
-
-If you want to replace this with a Flask application run:
-
-    $ make init
-
-and then choose `flask` as template.
 """
-import math
-import pprint
 import copy
 from typing import List
 
-# example constant variable
 NAME = "nonlinearequations"
-
-
-def solve_seidel(a: List[List[float]], v: List[float]) -> List[float]:
-    raise NotImplementedError
-
-
-def solve_simple_iterations(a: List[List[float]], v: List[float]) -> List[float]:
-    raise NotImplementedError
 
 
 def solve_newton(systems, x0, eps=0.00001) -> List[List[float]]:
@@ -42,45 +21,45 @@ def solve_newton(systems, x0, eps=0.00001) -> List[List[float]]:
 
     k = 0
     # считаем матрицу якоби подставив значение из x0 (matrixa)
-    matrix = jacobi(systems, x0)
+    matrix = __jacobi(systems, x0)
 
     # для деления F на матрицу якоби нужно найти обратную матрицу
-    obratnay_matrix = get_matrix_inverse(matrix)
+    obratnay_matrix = __get_matrix_inverse(matrix)
 
     # найдем вектор F подставив в исходную систему значения x0 и домножим полученный вектор на -1
     # тк мы решили полставлять в систему кортеж, то преобразуем вектор в кортеж, а после подстановки вернем все как было
 
     F = list(systems(x0))
-    F = get_matrix_minus(list(map(lambda x: [x], F)))
+    F = __get_matrix_minus(list(map(lambda x: [x], F)))
 
 
     # ищем delta_x0 = obratnay_matrixa * F
-    delta_x0 = get_matrix_mult(obratnay_matrix, F)
+    delta_x0 = __get_matrix_mult(obratnay_matrix, F)
 
     # ищем x1 = x0 + delta_x0
     k += 1
-    x1 = get_matrix_sum(list(map(lambda x: [x], x0)), delta_x0)
+    x1 = __get_matrix_sum(list(map(lambda x: [x], x0)), delta_x0)
     x1 = list(map(lambda x: x[0], x1))
 
     # далее повторяем те же дейсвия в цикле
     while stop_condition_newton(delta_x0) > eps:
-        matrix = jacobi(systems, x1)
-        obratnay_matrix = get_matrix_inverse(matrix)
+        matrix = __jacobi(systems, x1)
+        obratnay_matrix = __get_matrix_inverse(matrix)
 
         F = list(systems(x1))
-        F = get_matrix_minus(list(map(lambda x: [x], F)))
+        F = __get_matrix_minus(list(map(lambda x: [x], F)))
 
-        delta_x0 = get_matrix_mult(obratnay_matrix, F)
+        delta_x0 = __get_matrix_mult(obratnay_matrix, F)
 
         k += 1
         x0 = x1
-        x1 = get_matrix_sum(list(map(lambda x: [x], x0)), delta_x0)
+        x1 = __get_matrix_sum(list(map(lambda x: [x], x0)), delta_x0)
         x1 = list(map(lambda x: x[0], x1))
 
     return x1
 
 
-def get_matrix_transpose(m):
+def __get_matrix_transpose(m):
     """
     Функция вовзвращает транспонированную матрицу
     """
@@ -91,7 +70,7 @@ def get_matrix_transpose(m):
 
 
 
-def get_matrix_minor(m, i, j):
+def __get_matrix_minor(m, i, j):
     """
     Функция вовзращает минор матрицы
     """
@@ -99,7 +78,7 @@ def get_matrix_minor(m, i, j):
 
 
 
-def get_matrix_determinant(m):
+def __get_matrix_determinant(m):
     """
     Функция для расчета определителя
     """
@@ -109,16 +88,16 @@ def get_matrix_determinant(m):
 
     determinant = 0
     for c in range(len(m)):
-        determinant += ((-1) ** c) * m[0][c] * get_matrix_determinant(get_matrix_minor(m, 0, c))
+        determinant += ((-1) ** c) * m[0][c] * __get_matrix_determinant(__get_matrix_minor(m, 0, c))
     return determinant
 
 
 
-def get_matrix_inverse(m):
+def __get_matrix_inverse(m):
     """
     Функция возвращает обратную матрицу
     """
-    determinant = get_matrix_determinant(m)
+    determinant = __get_matrix_determinant(m)
     if determinant == 0:
         pass
     # если матрица 2 на 2
@@ -129,16 +108,16 @@ def get_matrix_inverse(m):
     for r in range(len(m)):
         cofactorRow = []
         for c in range(len(m)):
-            minor = get_matrix_minor(m, r, c)
-            cofactorRow.append(((-1) ** (r + c)) * get_matrix_determinant(minor))
+            minor = __get_matrix_minor(m, r, c)
+            cofactorRow.append(((-1) ** (r + c)) * __get_matrix_determinant(minor))
         cofactors.append(cofactorRow)
     for r in range(len(cofactors)):
         for c in range(len(cofactors)):
             cofactors[r][c] = cofactors[r][c] / determinant
-    return get_matrix_transpose(cofactors)
+    return __get_matrix_transpose(cofactors)
 
 
-def get_matrix_mult(A, b):
+def __get_matrix_mult(A, b):
     """
     Функция для умножения матриц
     """
@@ -160,7 +139,7 @@ def get_matrix_mult(A, b):
     return m3
 
 
-def get_matrix_minus(a):
+def __get_matrix_minus(a):
     """
     Функция вовращает матрицу умноженную на -1
     """
@@ -172,7 +151,7 @@ def get_matrix_minus(a):
 
 
 
-def get_matrix_sum(a, b):
+def __get_matrix_sum(a, b):
     """
     Функция возвращает сумму матриц
     """
@@ -185,23 +164,23 @@ def get_matrix_sum(a, b):
     return s
 
 
-def derivative(equation, pt, variable, j):
+def __derivative(equation, pt, variable, j):
     delta = pt[variable] / 10e6 if (pt[variable] is not 0) else 1 / 10e6
     diff = (equation(pt[:variable] + [pt[variable] + delta] + pt[variable + 1:])[j] - equation(pt)[j]) / delta
     return diff
 
 
-def matrix_output(matrix):
+def __matrix_output(matrix):
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
             print(matrix[i][j], end=' ')
         print()
 
 
-def jacobi(system, point):
+def __jacobi(system, point):
     dimention = len(system(point))
     jacobi_matrix = [[0 for j in range(dimention)] for i in range(dimention)]
     for i in range(dimention):
         for j in range(dimention):
-            jacobi_matrix[j][i] = derivative(system, point, i, j)
+            jacobi_matrix[j][i] = __derivative(system, point, i, j)
     return jacobi_matrix

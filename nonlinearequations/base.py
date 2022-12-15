@@ -8,7 +8,7 @@ from typing import List
 NAME = "nonlinearequations"
 
 
-def solve_newton(systems, x0, eps=0.00001) -> List[List[float]]:
+def solve_newton(systems, x0, eps=0.00001) -> List[float]:
     def stop_condition_newton(delta_x):
         """
         Функция для проверки условия прекращения алгоритма в методе Ньютона
